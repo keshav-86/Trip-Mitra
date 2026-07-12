@@ -1,16 +1,20 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 
-dotenv.config();
+import authRoutes from "./auth";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("🚀 TripMitra Backend Running...");
+app.use("/api/auth", authRoutes);
+
+app.get("/", (_req, res) => {
+  res.json({
+    success: true,
+    message: "TripMitra Backend Running 🚀",
+  });
 });
 
 export default app;
