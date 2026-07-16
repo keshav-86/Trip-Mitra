@@ -22,3 +22,11 @@ export const createTrip = async (
 
   return trip;
 };
+export const getMyTrips = async (userId: string) => {
+  return await Trip.find({
+    members: userId,
+  })
+    .populate("owner", "fullName email")
+    .populate("members", "fullName email")
+    .sort({ createdAt: -1 });
+};

@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { validationResult } from "express-validator";
 import { AuthRequest } from "../middleware/auth.middleware";
-import { createTrip } from "./trip.service";
+import { createTrip, getMyTrips} from "./trip.service";
 
 export const create = async (req: AuthRequest, res: Response) => {
   try {
@@ -37,6 +37,24 @@ export const create = async (req: AuthRequest, res: Response) => {
       success: true,
       message: "Trip created successfully",
       data: trip,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Internal Server Error",
+    });
+  }
+};
+
+export const getAll = async (req: AuthRequest, res: Response) => {
+  try {
+    const trips = await getMyTrips(req.user!.id);
+
+    return res.status(200).json({
+      success: true,
+      count: trips.length,
+      data: trips,
     });
   } catch (error) {
     return res.status(500).json({
