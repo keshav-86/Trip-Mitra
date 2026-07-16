@@ -22,6 +22,7 @@ export const createTrip = async (
 
   return trip;
 };
+
 export const getMyTrips = async (userId: string) => {
   return await Trip.find({
     members: userId,
@@ -29,4 +30,22 @@ export const getMyTrips = async (userId: string) => {
     .populate("owner", "fullName email")
     .populate("members", "fullName email")
     .sort({ createdAt: -1 });
+};
+
+export const getTripById = async (
+  tripId: string,
+  userId: string
+) => {
+  const trip = await Trip.findOne({
+    _id: tripId,
+    members: userId,
+  })
+    .populate("owner", "fullName email")
+    .populate("members", "fullName email");
+
+  if (!trip) {
+    throw new Error("Trip not found");
+  }
+
+  return trip;
 };

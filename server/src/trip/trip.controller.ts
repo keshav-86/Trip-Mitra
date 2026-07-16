@@ -1,7 +1,11 @@
 import { Response } from "express";
 import { validationResult } from "express-validator";
 import { AuthRequest } from "../middleware/auth.middleware";
-import { createTrip, getMyTrips} from "./trip.service";
+import {
+  createTrip,
+  getMyTrips,
+  getTripById,
+} from "./trip.service";
 
 export const create = async (req: AuthRequest, res: Response) => {
   try {
@@ -61,6 +65,26 @@ export const getAll = async (req: AuthRequest, res: Response) => {
       success: false,
       message:
         error instanceof Error ? error.message : "Internal Server Error",
+    });
+  }
+};
+
+export const getOne = async (req: AuthRequest, res: Response) => {
+  try {
+    const trip = await getTripById(
+      req.params.id,
+      req.user!.id
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: trip,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Trip not found",
     });
   }
 };
