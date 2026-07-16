@@ -3,6 +3,7 @@ import cors from "cors";
 
 import authRoutes from "./auth";
 import tripRoutes from "./trip";
+import expenseRoutes from "./expense";
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/trips", tripRoutes);
+app.use("/api/expenses", expenseRoutes);
 
 app.get("/", (_req, res) => {
   res.json({

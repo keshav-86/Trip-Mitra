@@ -1,16 +1,19 @@
 import { Response } from "express";
 import { validationResult } from "express-validator";
 import { AuthRequest } from "../middleware/auth.middleware";
+
 import {
-  createTrip,
-  getMyTrips,
-  getTripById,
-  updateTrip,
-  deleteTrip,
-  joinTrip,
+  addExpense,
+  getExpenses,
+  getExpenseById,
+  updateExpense,
+  deleteExpense,
+  getExpenseSummary,
+} from "./expense.service";
 
-} from "./trip.service";
-
+/**
+ * Add Expense
+ */
 export const create = async (req: AuthRequest, res: Response) => {
   try {
     const errors = validationResult(req);
@@ -23,87 +26,26 @@ export const create = async (req: AuthRequest, res: Response) => {
     }
 
     const {
-      title,
-      destination,
+      tripId,
       description,
-      startDate,
-      endDate,
-      budget,
+      amount,
+      category,
+      participants,
     } = req.body;
 
-    const trip = await createTrip(
-      title,
-      destination,
+    const expense = await addExpense(
+      tripId,
+      req.user!.id,
       description,
-      startDate,
-      endDate,
-      budget,
-      req.user!.id
+      amount,
+      category,
+      participants
     );
 
     return res.status(201).json({
       success: true,
-      message: "Trip created successfully",
-      data: trip,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Internal Server Error",
-    });
-  }
-};
-
-export const getAll = async (req: AuthRequest, res: Response) => {
-  try {
-    const trips = await getMyTrips(req.user!.id);
-
-    return res.status(200).json({
-      success: true,
-      count: trips.length,
-      data: trips,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Internal Server Error",
-    });
-  }
-};
-
-export const getOne = async (req: AuthRequest, res: Response) => {
-  try {
-    const trip = await getTripById(
-      req.params.id as string,
-      req.user!.id
-    );
-
-    return res.status(200).json({
-      success: true,
-      data: trip,
-    });
-  } catch (error) {
-    return res.status(404).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Trip not found",
-    });
-  }
-};
-export const update = async (req: AuthRequest, res: Response) => {
-  try {
-    const trip = await updateTrip(
-      req.params.id as string,
-      req.user!.id,
-      req.body
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: "Trip updated successfully",
-      data: trip,
+      message: "Expense added successfully",
+      data: expense,
     });
   } catch (error) {
     return res.status(400).json({
@@ -114,10 +56,79 @@ export const update = async (req: AuthRequest, res: Response) => {
   }
 };
 
+/**
+ * Get Expenses of Trip
+ */
+export const getAll = async (req: AuthRequest, res: Response) => {
+  try {
+    const expenses = await getExpenses(req.params.tripId as string);
+
+    return res.status(200).json({
+      success: true,
+      count: expenses.length,
+      data: expenses,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Something went wrong",
+    });
+  }
+};
+
+/**
+ * Get Expense By Id
+ */
+export const getOne = async (req: AuthRequest, res: Response) => {
+  try {
+    const expense = await getExpenseById(req.params.expenseId as string);
+
+    return res.status(200).json({
+      success: true,
+      data: expense,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Expense not found",
+    });
+  }
+};
+
+/**
+ * Update Expense
+ */
+export const update = async (req: AuthRequest, res: Response) => {
+  try {
+    const expense = await updateExpense(
+      req.params.expenseId as string,
+      req.user!.id,
+      req.body
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Expense updated successfully",
+      data: expense,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Something went wrong",
+    });
+  }
+};
+
+/**
+ * Delete Expense
+ */
 export const remove = async (req: AuthRequest, res: Response) => {
   try {
-    const result = await deleteTrip(
-      req.params.id as string,
+    const result = await deleteExpense(
+      req.params.expenseId as string,
       req.user!.id
     );
 
@@ -134,17 +145,16 @@ export const remove = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const join = async (req: AuthRequest, res: Response) => {
+/**
+ * Expense Summary
+ */
+export const summary = async (req: AuthRequest, res: Response) => {
   try {
-    const trip = await joinTrip(
-      req.params.id as string,
-      req.user!.id
-    );
+    const result = await getExpenseSummary(req.params.tripId as string);
 
     return res.status(200).json({
       success: true,
-      message: "Joined trip successfully",
-      data: trip,
+      data: result,
     });
   } catch (error) {
     return res.status(400).json({
