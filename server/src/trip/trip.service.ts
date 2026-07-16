@@ -118,5 +118,8 @@ export const joinTrip = async (
 
   await trip.save();
 
-  return trip;
+  return await trip.populate([
+    { path: "owner", select: "fullName email" },
+    { path: "members", select: "fullName email" },
+  ]);
 };
