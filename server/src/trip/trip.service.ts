@@ -123,3 +123,39 @@ export const joinTrip = async (
     { path: "members", select: "fullName email" },
   ]);
 };
+export const leaveTrip = async (
+  tripId: string,
+  userId: string
+) => {
+  const trip = await Trip.findById(tripId);
+
+  if (!trip) {
+    throw new Error("Trip not found");
+  }
+
+  // Owner cannot leave
+  if (trip.owner.toString() === userId) {
+    throw new Error("Trip owner cannot leave the trip");
+  }
+
+  // Check membership
+  const isMember = trip.members.some(
+    (member) => member.toString() === userId
+  );
+
+  if (!isMember) {
+    throw new Error("You are not a member of this trip");
+  }
+
+  // Remove member
+  trip.members = trip.members.filter(
+    (member) => member.toString() !== userId
+  ) as any;
+
+  await trip.save();
+
+  return await trip.populate([
+    { path: "owner", select: "fullName email" },
+    { path: "members", select: "fullName email" },
+  ]);
+};

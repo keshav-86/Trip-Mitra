@@ -8,6 +8,7 @@ import {
   updateTrip,
   deleteTrip,
   joinTrip,
+  leaveTrip,
 
 } from "./trip.service";
 
@@ -144,6 +145,27 @@ export const join = async (req: AuthRequest, res: Response) => {
     return res.status(200).json({
       success: true,
       message: "Joined trip successfully",
+      data: trip,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Something went wrong",
+    });
+  }
+};
+
+export const leave = async (req: AuthRequest, res: Response) => {
+  try {
+    const trip = await leaveTrip(
+      req.params.id,
+      req.user!.id
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Left trip successfully",
       data: trip,
     });
   } catch (error) {
