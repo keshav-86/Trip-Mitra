@@ -28,17 +28,29 @@ export const loginUser = async (
   email: string,
   password: string
 ) => {
+  console.log("=== LOGIN DEBUG ===");
+  console.log("Email Received:", email);
+  console.log("Password Received:", password);
+
   const user = await User.findOne({ email });
+
+  console.log("User Found:", user);
 
   if (!user) {
     throw new Error("Invalid email or password");
   }
 
+  console.log("Stored Password Hash:", user.password);
+
   const isMatch = await bcrypt.compare(password, user.password);
+
+  console.log("Password Match:", isMatch);
 
   if (!isMatch) {
     throw new Error("Invalid email or password");
   }
+
+  console.log("Login Successful");
 
   return user;
 };

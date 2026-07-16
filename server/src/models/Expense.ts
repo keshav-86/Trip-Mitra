@@ -5,7 +5,13 @@ export interface IExpense extends Document {
   paidBy: mongoose.Types.ObjectId;
   description: string;
   amount: number;
-  category: string;
+  category:
+    | "FOOD"
+    | "TRANSPORT"
+    | "ACCOMMODATION"
+    | "SHOPPING"
+    | "ENTERTAINMENT"
+    | "OTHER";
   participants: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
@@ -34,27 +40,27 @@ const expenseSchema = new Schema<IExpense>(
     amount: {
       type: Number,
       required: true,
-      min: 1,
+      min: 0,
     },
 
     category: {
       type: String,
       enum: [
-        "Food",
-        "Travel",
-        "Hotel",
-        "Shopping",
-        "Fuel",
-        "Entertainment",
-        "Other",
+        "FOOD",
+        "TRANSPORT",
+        "ACCOMMODATION",
+        "SHOPPING",
+        "ENTERTAINMENT",
+        "OTHER",
       ],
-      default: "Other",
+      required: true,
     },
 
     participants: [
       {
         type: Schema.Types.ObjectId,
         ref: "User",
+        required: true,
       },
     ],
   },
@@ -63,6 +69,4 @@ const expenseSchema = new Schema<IExpense>(
   }
 );
 
-const Expense = mongoose.model<IExpense>("Expense", expenseSchema);
-
-export default Expense;
+export default mongoose.model<IExpense>("Expense", expenseSchema);
