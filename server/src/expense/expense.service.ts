@@ -144,3 +144,30 @@ export const getExpenseSummary = async (tripId: string) => {
     expenseCount: expenses.length,
   };
 };
+
+export const getRemainingBudget = async (
+  tripId: string
+) => {
+  const trip = await Trip.findById(tripId);
+
+  if (!trip) {
+    throw new Error("Trip not found");
+  }
+
+  const expenses = await Expense.find({
+    trip: tripId,
+  });
+
+  const totalExpense = expenses.reduce(
+    (sum, expense) => sum + expense.amount,
+    0
+  );
+
+  const remainingBudget = trip.budget - totalExpense;
+
+  return {
+    budget: trip.budget,
+    totalExpense,
+    remainingBudget,
+  };
+};

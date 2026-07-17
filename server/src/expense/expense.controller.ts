@@ -9,6 +9,7 @@ import {
   updateExpense,
   deleteExpense,
   getExpenseSummary,
+  getRemainingBudget,
 } from "./expense.service";
 
 /**
@@ -51,7 +52,9 @@ export const create = async (req: AuthRequest, res: Response) => {
     return res.status(400).json({
       success: false,
       message:
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error
+          ? error.message
+          : "Something went wrong",
     });
   }
 };
@@ -61,7 +64,7 @@ export const create = async (req: AuthRequest, res: Response) => {
  */
 export const getAll = async (req: AuthRequest, res: Response) => {
   try {
-    const expenses = await getExpenses(req.params.tripId as string);
+    const expenses = await getExpenses(req.params.tripId);
 
     return res.status(200).json({
       success: true,
@@ -72,7 +75,9 @@ export const getAll = async (req: AuthRequest, res: Response) => {
     return res.status(400).json({
       success: false,
       message:
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error
+          ? error.message
+          : "Something went wrong",
     });
   }
 };
@@ -82,7 +87,7 @@ export const getAll = async (req: AuthRequest, res: Response) => {
  */
 export const getOne = async (req: AuthRequest, res: Response) => {
   try {
-    const expense = await getExpenseById(req.params.expenseId as string);
+    const expense = await getExpenseById(req.params.expenseId);
 
     return res.status(200).json({
       success: true,
@@ -92,7 +97,9 @@ export const getOne = async (req: AuthRequest, res: Response) => {
     return res.status(404).json({
       success: false,
       message:
-        error instanceof Error ? error.message : "Expense not found",
+        error instanceof Error
+          ? error.message
+          : "Expense not found",
     });
   }
 };
@@ -103,7 +110,7 @@ export const getOne = async (req: AuthRequest, res: Response) => {
 export const update = async (req: AuthRequest, res: Response) => {
   try {
     const expense = await updateExpense(
-      req.params.expenseId as string,
+      req.params.expenseId,
       req.user!.id,
       req.body
     );
@@ -117,7 +124,9 @@ export const update = async (req: AuthRequest, res: Response) => {
     return res.status(400).json({
       success: false,
       message:
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error
+          ? error.message
+          : "Something went wrong",
     });
   }
 };
@@ -128,7 +137,7 @@ export const update = async (req: AuthRequest, res: Response) => {
 export const remove = async (req: AuthRequest, res: Response) => {
   try {
     const result = await deleteExpense(
-      req.params.expenseId as string,
+      req.params.expenseId,
       req.user!.id
     );
 
@@ -140,7 +149,9 @@ export const remove = async (req: AuthRequest, res: Response) => {
     return res.status(400).json({
       success: false,
       message:
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error
+          ? error.message
+          : "Something went wrong",
     });
   }
 };
@@ -150,7 +161,7 @@ export const remove = async (req: AuthRequest, res: Response) => {
  */
 export const summary = async (req: AuthRequest, res: Response) => {
   try {
-    const result = await getExpenseSummary(req.params.tripId as string);
+    const result = await getExpenseSummary(req.params.tripId);
 
     return res.status(200).json({
       success: true,
@@ -160,7 +171,34 @@ export const summary = async (req: AuthRequest, res: Response) => {
     return res.status(400).json({
       success: false,
       message:
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error
+          ? error.message
+          : "Something went wrong",
+    });
+  }
+};
+
+/**
+ * Remaining Budget
+ */
+export const getBudgetSummary = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  try {
+    const result = await getRemainingBudget(req.params.tripId);
+
+    return res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong",
     });
   }
 };
