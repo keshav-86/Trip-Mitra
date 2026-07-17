@@ -59,6 +59,56 @@ export const getSettlementData = async (tripId: string) => {
     };
   });
 
+  // Creditors & Debtors
+const creditors = balances
+  .filter((b) => b.balance > 0)
+  .map((b) => ({
+    ...b,
+    balance: Number(b.balance.toFixed(2)),
+  }));
+
+const debtors = balances
+  .filter((b) => b.balance < 0)
+  .map((b) => ({
+    ...b,
+    balance: Number(Math.abs(b.balance).toFixed(2)),
+  }));
+
+const settlements = [];
+
+let i = 0;
+let j = 0;
+
+while (i < debtors.length && j < creditors.length) {
+  const debtor = debtors[i];
+  const creditor = creditors[j];
+
+  const amount = Math.min(
+    debtor.balance,
+    creditor.balance
+  );
+
+  settlements.push({
+    from: {
+      userId: debtor.userId,
+      fullName: debtor.fullName,
+      email: debtor.email,
+    },
+    to: {
+      userId: creditor.userId,
+      fullName: creditor.fullName,
+      email: creditor.email,
+    },
+    amount,
+  });
+
+  debtor.balance -= amount;
+  creditor.balance -= amount;
+
+  if (debtor.balance === 0) i++;
+  if (creditor.balance === 0) j++;
+}
+
   return {
     tripName: trip.title,
     totalExpense,
@@ -66,5 +116,6 @@ export const getSettlementData = async (tripId: string) => {
     memberCount,
     perPersonShare,
     balances,
+    settlements,
   };
 };
