@@ -102,3 +102,26 @@ export const profile = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { fullName, email } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { fullName, email },
+      { new: true }
+    ).select("-password");
+
+    res.json({
+      success: true,
+      data: user,
+      message: "Profile updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile",
+    });
+  }
+};

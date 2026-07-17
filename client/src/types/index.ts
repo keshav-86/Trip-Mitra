@@ -1,3 +1,4 @@
+// Landing Page Types
 export interface NavLink {
   href: string;
   label: string;
@@ -11,7 +12,7 @@ export interface StatItem {
 
 export interface TechLogo {
   name: string;
-  logoSvg: string; // inline SVG path or rendering details
+  logoSvg: string;
 }
 
 export interface FeatureItem {
@@ -45,4 +46,75 @@ export interface TestimonialItem {
 export interface FAQItem {
   question: string;
   answer: string;
+}
+
+// Authenticated Application Types
+export interface User {
+  _id: string;
+  fullName: string;
+  email: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Trip {
+  _id: string;
+  title: string;
+  description?: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  budget: number;
+  createdBy: string | User;
+  members: (string | User)[];
+  inviteCode?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+
+
+export interface Expense {
+  _id: string;
+  trip: string;
+  description: string;
+  amount: number;
+  category:
+    | "FOOD"
+    | "TRANSPORT"
+    | "ACCOMMODATION"
+    | "SHOPPING"
+    | "ENTERTAINMENT"
+    | "OTHER";
+  paidBy: string | User;
+  participants: (string | User)[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Settlement {
+  from: User;
+  to: User;
+  amount: number;
+  paid?: boolean;
+}
+
+export interface APIResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  token?: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message?: string;
+  token: string;
+  data: User;
+}
+
+export interface BudgetReport {
+  budget: number;
+  totalExpense: number;
+  remainingBudget: number;
 }

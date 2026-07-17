@@ -137,8 +137,10 @@ export const remove = async (req: AuthRequest, res: Response) => {
 
 export const join = async (req: AuthRequest, res: Response) => {
   try {
+    const { inviteCode } = req.body;
+
     const trip = await joinTrip(
-      req.params.id as string,
+      inviteCode,
       req.user!.id
     );
 
@@ -155,7 +157,6 @@ export const join = async (req: AuthRequest, res: Response) => {
     });
   }
 };
-
 export const leave = async (req: AuthRequest, res: Response) => {
   try {
     const trip = await leaveTrip(

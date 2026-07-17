@@ -11,7 +11,7 @@ router.get("/", protect, getAll);
 router.get("/:id", protect, getOne);
 router.put("/:id", protect, update);
 router.delete("/:id", protect, remove);
-router.post("/:id/join", protect, join);
+router.post("/join", protect, join);
 router.post("/:id/leave", protect, leave);
 
 export default router;

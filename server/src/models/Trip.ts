@@ -9,6 +9,7 @@ export interface ITrip extends Document {
   budget: number;
   owner: mongoose.Types.ObjectId;
   members: mongoose.Types.ObjectId[];
+  inviteCode: string; // NEW
   coverImage?: string;
   status: "PLANNING" | "ONGOING" | "COMPLETED";
 }
@@ -59,6 +60,13 @@ const tripSchema = new Schema<ITrip>(
         ref: "User",
       },
     ],
+
+    // NEW FIELD
+    inviteCode: {
+      type: String,
+      required: true,
+      unique: true,
+    },
 
     coverImage: {
       type: String,

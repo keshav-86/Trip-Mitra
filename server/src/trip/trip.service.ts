@@ -1,4 +1,5 @@
 import Trip from "../models/Trip";
+import crypto from "crypto";
 
 export const createTrip = async (
   title: string,
@@ -9,6 +10,8 @@ export const createTrip = async (
   budget: number,
   owner: string
 ) => {
+  const inviteCode = crypto.randomBytes(3).toString("hex").toUpperCase();
+
   const trip = await Trip.create({
     title,
     destination,
@@ -18,6 +21,7 @@ export const createTrip = async (
     budget,
     owner,
     members: [owner],
+    inviteCode,
   });
 
   return trip;
@@ -100,16 +104,15 @@ export const deleteTrip = async (
   };
 };
 export const joinTrip = async (
-  tripId: string,
+  inviteCode: string,
   userId: string
 ) => {
-  const trip = await Trip.findById(tripId);
+  const trip = await Trip.findOne({ inviteCode });
 
   if (!trip) {
-    throw new Error("Trip not found");
+    throw new Error("Invalid invite code");
   }
 
-  // Already joined
   if (trip.members.some(member => member.toString() === userId)) {
     throw new Error("You are already a member of this trip");
   }
@@ -123,6 +126,7 @@ export const joinTrip = async (
     { path: "members", select: "fullName email" },
   ]);
 };
+
 export const leaveTrip = async (
   tripId: string,
   userId: string
