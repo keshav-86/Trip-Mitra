@@ -29,7 +29,13 @@ export default function TripSettlements({
       const res = await settlementService.getSettlements(tripId);
 
       if (res.success && res.data) {
-        setSettlements(res.data.settlements || []);
+        if (Array.isArray(res.data)) {
+          setSettlements(res.data);
+        } else if (res.data && Array.isArray(res.data.settlements)) {
+          setSettlements(res.data.settlements);
+        } else {
+          setSettlements([]);
+        }
       } else {
         setSettlements([]);
       }
@@ -52,9 +58,9 @@ export default function TripSettlements({
     );
   }
 
-  const activeSettlements = settlements.filter(
-    (settlement) => settlement.amount > 0
-  );
+  const activeSettlements = Array.isArray(settlements)
+    ? settlements.filter((settlement) => settlement.amount > 0)
+    : [];
 
   return (
     <div className="space-y-4">

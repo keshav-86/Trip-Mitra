@@ -15,6 +15,15 @@ import { Calendar, MapPin, Plus, ArrowLeft } from "lucide-react";
 import Button from "@/components/ui/Button";
 import toast from "react-hot-toast";
 
+// Import editable AI Workspace components
+import {
+  ItineraryTab,
+  BudgetBreakdownTab,
+  PackingChecklistTab,
+  LocalFoodsTab,
+  TravelTipsTab
+} from "@/components/trips/AIWorkspaceTabs";
+
 export default function TripDetailsPage() {
   const params = useParams();
   const router = useRouter();
@@ -22,7 +31,7 @@ export default function TripDetailsPage() {
 
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "expenses" | "members" | "settlements">("overview");
+  const [activeTab, setActiveTab] = useState<string>("overview");
   const [expenseModalOpen, setExpenseModalOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
 
@@ -61,12 +70,31 @@ export default function TripDetailsPage() {
     return new Date(dateStr).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
   };
 
-  const tabs = [
-    { id: "overview" as const, label: "Overview" },
-    { id: "expenses" as const, label: "Expenses & Budget" },
-    { id: "members" as const, label: "Companions" },
-    { id: "settlements" as const, label: "Settlements" }
+  // Build tabs dynamically depending on whether AI-generated planner fields exist on the trip
+  const tabs: { id: string; label: string }[] = [
+    { id: "overview", label: "Overview" },
   ];
+
+  if (trip.itinerary && trip.itinerary.length > 0) {
+    tabs.push({ id: "itinerary", label: "Itinerary Timeline" });
+  }
+
+  tabs.push({ id: "expenses", label: "Expenses & Budget" });
+
+  if (trip.packingList && trip.packingList.length > 0) {
+    tabs.push({ id: "packing", label: "Packing Checklist" });
+  }
+  if (trip.localFoods && trip.localFoods.length > 0) {
+    tabs.push({ id: "foods", label: "Local Foods" });
+  }
+  if (trip.travelTips && trip.travelTips.length > 0) {
+    tabs.push({ id: "tips", label: "Travel Tips" });
+  }
+
+  tabs.push(
+    { id: "members", label: "Companions" },
+    { id: "settlements", label: "Settlements" }
+  );
 
   return (
     <ProtectedLayout>
@@ -114,12 +142,29 @@ export default function TripDetailsPage() {
         {/* Tab workspace Panel */}
         <div className="py-2">
           {activeTab === "overview" && <TripOverview trip={trip} />}
+          {activeTab === "itinerary" && (
+            <ItineraryTab trip={trip} onUpdate={(updated) => setTrip(updated)} />
+          )}
           {activeTab === "expenses" && (
-            <TripExpenses
-              tripId={trip._id}
-              onAddExpenseClick={() => setExpenseModalOpen(true)}
-              refreshTrigger={refreshTrigger}
-            />
+            <div className="space-y-8">
+              {trip.budgetBreakdown && (
+                <BudgetBreakdownTab trip={trip} onUpdate={(updated) => setTrip(updated)} />
+              )}
+              <TripExpenses
+                tripId={trip._id}
+                onAddExpenseClick={() => setExpenseModalOpen(true)}
+                refreshTrigger={refreshTrigger}
+              />
+            </div>
+          )}
+          {activeTab === "packing" && (
+            <PackingChecklistTab trip={trip} onUpdate={(updated) => setTrip(updated)} />
+          )}
+          {activeTab === "foods" && (
+            <LocalFoodsTab trip={trip} onUpdate={(updated) => setTrip(updated)} />
+          )}
+          {activeTab === "tips" && (
+            <TravelTipsTab trip={trip} onUpdate={(updated) => setTrip(updated)} />
           )}
           {activeTab === "members" && <TripMembers trip={trip} />}
           {activeTab === "settlements" && (

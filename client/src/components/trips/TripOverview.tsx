@@ -44,7 +44,7 @@ export default function TripOverview({ trip }: TripOverviewProps) {
     return <LoadingSpinner message="Calculating budget balances..." />;
   }
 
-  const totalSpent = budgetReport?.totalExpenses || 0;
+  const totalSpent = budgetReport?.totalExpense || 0;
   const remaining = budgetReport?.remainingBudget ?? (trip.budget - totalSpent);
   const percentSpent = Math.min(Math.round((totalSpent / trip.budget) * 100), 100);
 

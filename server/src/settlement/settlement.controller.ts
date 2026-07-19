@@ -7,7 +7,7 @@ export const getSettlement = async (
   res: Response
 ) => {
   try {
-    const result = await getSettlementData(req.params.tripId);
+    const result = await getSettlementData(req.params.tripId as string);
 
     return res.status(200).json({
       success: true,

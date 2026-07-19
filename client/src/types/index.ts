@@ -70,6 +70,22 @@ export interface Trip {
   inviteCode?: string;
   createdAt?: string;
   updatedAt?: string;
+  travelers?: number;
+  itinerary?: {
+    day: number;
+    title: string;
+    activities: string[];
+  }[];
+  budgetBreakdown?: {
+    accommodation: number;
+    food: number;
+    transport: number;
+    activities: number;
+    miscellaneous: number;
+  };
+  packingList?: string[];
+  localFoods?: string[];
+  travelTips?: string[];
 }
 
 

@@ -1,9 +1,9 @@
 "use client";
-
+ 
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, LayoutDashboard, Briefcase, User, LogOut } from "lucide-react";
+import { Compass, Home, LayoutDashboard, Briefcase, User, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
@@ -16,13 +16,15 @@ export default function Sidebar({ className }: SidebarProps) {
   const { logout } = useAuth();
 
   const menuItems = [
+    { label: "🏠 Home", href: "/", icon: Home },
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { label: "My Trips", href: "/trips", icon: Briefcase },
     { label: "Profile", href: "/profile", icon: User }
   ];
 
   const isActive = (href: string) => {
-    if (href === "/dashboard") return pathname === href;
+    if (href === "/") return pathname === "/";
+    if (href === "/dashboard") return pathname === "/dashboard";
     return pathname.startsWith(href);
   };
 
@@ -34,7 +36,7 @@ export default function Sidebar({ className }: SidebarProps) {
       )}
     >
       {/* Brand Header */}
-      <Link href="/dashboard" className="flex items-center gap-2 group mb-8 px-2">
+      <Link href="/" className="flex items-center gap-2 group mb-8 px-2">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-secondary text-white shadow-md shadow-primary/10 group-hover:scale-105 transition-transform duration-300">
           <Compass className="h-5 w-5 animate-pulse-slow" />
         </div>

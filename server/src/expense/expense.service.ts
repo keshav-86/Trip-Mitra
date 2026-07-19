@@ -1,4 +1,4 @@
-import Expense from "../models/Expense";
+import Expense, { IExpense } from "../models/Expense";
 import Trip from "../models/Trip";
 
 /**
@@ -9,7 +9,7 @@ export const addExpense = async (
   paidBy: string,
   description: string,
   amount: number,
-  category: string,
+  category: IExpense["category"],
   participants: string[]
 ) => {
   const trip = await Trip.findById(tripId);
@@ -78,7 +78,7 @@ export const updateExpense = async (
   data: {
     description?: string;
     amount?: number;
-    category?: string;
+    category?: IExpense["category"];
     participants?: string[];
   }
 ) => {

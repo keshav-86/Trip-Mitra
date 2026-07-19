@@ -87,7 +87,10 @@ export const FEATURES_DATA: FeatureItem[] = [
     title: "AI Packing Assistant",
     description: "Smart packing checklist custom-generated for your destination's microclimate, duration, and planned activities.",
     iconName: "Luggage"
-  },
+  }
+];
+
+export const COMING_SOON_DATA: FeatureItem[] = [
   {
     id: "smart-maps",
     title: "Smart Maps",

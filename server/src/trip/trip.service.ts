@@ -8,7 +8,15 @@ export const createTrip = async (
   startDate: Date,
   endDate: Date,
   budget: number,
-  owner: string
+  owner: string,
+  additionalData?: {
+    travelers?: number;
+    itinerary?: any[];
+    budgetBreakdown?: any;
+    packingList?: string[];
+    localFoods?: string[];
+    travelTips?: string[];
+  }
 ) => {
   const inviteCode = crypto.randomBytes(3).toString("hex").toUpperCase();
 
@@ -22,6 +30,7 @@ export const createTrip = async (
     owner,
     members: [owner],
     inviteCode,
+    ...(additionalData || {}),
   });
 
   return trip;
@@ -63,6 +72,12 @@ export const updateTrip = async (
     startDate?: Date;
     endDate?: Date;
     budget?: number;
+    travelers?: number;
+    itinerary?: any[];
+    budgetBreakdown?: any;
+    packingList?: string[];
+    localFoods?: string[];
+    travelTips?: string[];
   }
 ) => {
   const trip = await Trip.findById(tripId);

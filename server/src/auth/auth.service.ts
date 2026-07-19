@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import User from "../models/User";
 import jwt from "jsonwebtoken";
+import { generateOtp, hashOtp } from "../utils/otp";
+import { emailService } from "../services/email.service";
 
 export const registerUser = async (
   fullName: string,
@@ -14,12 +16,24 @@ export const registerUser = async (
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+  const plainTextOtp = generateOtp(6);
+  const hashedOtp = hashOtp(plainTextOtp);
+  const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
 
   const user = await User.create({
     fullName,
     email,
     password: hashedPassword,
+    isVerified: false,
+    otp: hashedOtp,
+    otpExpiry,
   });
+
+  try {
+    await emailService.sendOtpEmail(email, fullName, plainTextOtp);
+  } catch (emailErr) {
+    console.error("Failed to send verification email:", emailErr);
+  }
 
   return user;
 };
@@ -38,6 +52,10 @@ export const loginUser = async (
 
   if (!user) {
     throw new Error("Invalid email or password");
+  }
+
+  if (!user.isVerified) {
+    throw new Error("Please verify your email address to log in.");
   }
 
   console.log("Stored Password Hash:", user.password);

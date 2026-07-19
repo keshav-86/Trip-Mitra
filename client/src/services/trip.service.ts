@@ -8,6 +8,22 @@ export interface CreateTripPayload {
   startDate: string;
   endDate: string;
   budget: number;
+  travelers?: number;
+  itinerary?: {
+    day: number;
+    title: string;
+    activities: string[];
+  }[];
+  budgetBreakdown?: {
+    accommodation: number;
+    food: number;
+    transport: number;
+    activities: number;
+    miscellaneous: number;
+  };
+  packingList?: string[];
+  localFoods?: string[];
+  travelTips?: string[];
 }
 
 export interface JoinTripPayload {

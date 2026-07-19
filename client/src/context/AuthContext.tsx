@@ -23,6 +23,8 @@ export interface AuthContextType {
   ) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  verifyEmail: (email: string, otp: string) => Promise<void>;
+  resendOtp: (email: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -105,27 +107,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
 
     try {
-      const res = await authService.register({
+      await authService.register({
         fullName,
         email,
         password,
       });
 
-      if (res.token) {
-        setToken(res.token);
-
-        if (res.data) {
-          setUser(res.data);
-        }
-
-        toast.success("Account created successfully!");
-
-        router.replace("/dashboard");
-      } else {
-        toast.success("Account created! Please login.");
-
-        router.replace("/login");
-      }
+      toast.success("Registration successful! Please verify your email.");
+      router.replace(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message ||
@@ -154,6 +143,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const verifyEmail = async (email: string, otp: string) => {
+    setLoading(true);
+    try {
+      await authService.verifyEmail(email, otp);
+      toast.success("Email verified successfully! You can now log in.");
+      router.replace("/login");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || err?.message || "Verification failed.");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resendOtp = async (email: string) => {
+    try {
+      await authService.resendOtp(email);
+      toast.success("Verification code resent successfully.");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || err?.message || "Failed to resend code.");
+      throw err;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -163,6 +176,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         refreshUser,
+        verifyEmail,
+        resendOtp,
       }}
     >
       {children}

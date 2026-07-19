@@ -105,7 +105,7 @@ export default function DashboardNavbar({ onMenuClick, title = "Mitra Workspace"
                 <div className="fixed inset-0 z-10" onClick={() => setShowDropdown(false)} />
                 <div className="absolute right-0 mt-2 w-52 origin-top-right rounded-xl border border-border bg-card shadow-lg p-1.5 focus:outline-none z-20">
                   <div className="px-3 py-2 border-b border-border/80 mb-1">
-                    <p className="text-xs font-bold text-foreground line-clamp-1">{user?.name}</p>
+                    <p className="text-xs font-bold text-foreground line-clamp-1">{user?.fullName}</p>
                     <p className="text-[10px] text-muted-foreground line-clamp-1">{user?.email}</p>
                   </div>
                   <button

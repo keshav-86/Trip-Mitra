@@ -2,9 +2,9 @@ import api from "@/lib/api";
 import { AuthResponse, APIResponse, User } from "@/types";
 
 export interface RegisterPayload {
-  name: string;
+  fullName: string;
   email: string;
-  password?: string; // made optional in types if needed, but required for registration
+  password?: string;
 }
 
 export interface LoginPayload {
@@ -30,6 +30,16 @@ export const authService = {
 
   async updateProfile(payload: { fullName: string; email: string }): Promise<APIResponse<User>> {
     const response = await api.put<APIResponse<User>>("/auth/profile", payload);
+    return response.data;
+  },
+
+  async verifyEmail(email: string, otp: string): Promise<APIResponse<null>> {
+    const response = await api.post<APIResponse<null>>("/auth/verify", { email, otp });
+    return response.data;
+  },
+
+  async resendOtp(email: string): Promise<APIResponse<null>> {
+    const response = await api.post<APIResponse<null>>("/auth/resend-otp", { email });
     return response.data;
   }
 };

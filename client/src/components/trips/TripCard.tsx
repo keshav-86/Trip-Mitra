@@ -35,6 +35,7 @@ export default function TripCard({ trip, onDelete }: TripCardProps) {
   const status = getTripStatus();
 
   const copyInviteCode = async () => {
+    if (!trip.inviteCode) return;
     try {
       await navigator.clipboard.writeText(trip.inviteCode);
       toast.success("Invite code copied!");

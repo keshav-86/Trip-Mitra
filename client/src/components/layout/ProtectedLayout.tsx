@@ -1,8 +1,8 @@
 "use client";
-
+ 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Compass, X, LayoutDashboard, Briefcase, User as UserIcon, LogOut } from "lucide-react";
+import { Compass, X, Home, LayoutDashboard, Briefcase, User as UserIcon, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import Sidebar from "./Sidebar";
 import DashboardNavbar from "./DashboardNavbar";
@@ -36,10 +36,17 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   };
 
   const mobileLinks = [
+    { label: "🏠 Home", href: "/", icon: Home },
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { label: "My Trips", href: "/trips", icon: Briefcase },
     { label: "Profile", href: "/profile", icon: UserIcon }
   ];
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    if (href === "/dashboard") return pathname === "/dashboard";
+    return pathname.startsWith(href);
+  };
 
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden relative transition-colors duration-300">
@@ -57,7 +64,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
           <div className="fixed inset-0 bg-background/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
           <div className="relative flex w-full max-w-xs flex-col bg-card border-r border-border p-6 shadow-2xl animate-in slide-in-from-left duration-300">
             <div className="flex items-center justify-between mb-8">
-              <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-secondary text-white">
                   <Compass className="h-5 w-5" />
                 </div>
@@ -75,7 +82,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
 
             <nav className="flex-1 space-y-1">
               {mobileLinks.map((item) => {
-                const Active = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                const Active = isActive(item.href);
                 const Icon = item.icon;
                 return (
                   <Link

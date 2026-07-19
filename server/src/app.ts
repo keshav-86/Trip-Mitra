@@ -10,11 +10,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 import settlementRoutes from "./settlement";
+import aiRoutes from "./ai/ai.routes";
 
 app.use("/api/auth", authRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/settlements", settlementRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.get("/", (_req, res) => {
   res.json({

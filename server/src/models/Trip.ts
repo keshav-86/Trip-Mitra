@@ -12,6 +12,22 @@ export interface ITrip extends Document {
   inviteCode: string; // NEW
   coverImage?: string;
   status: "PLANNING" | "ONGOING" | "COMPLETED";
+  travelers?: number;
+  itinerary?: {
+    day: number;
+    title: string;
+    activities: string[];
+  }[];
+  budgetBreakdown?: {
+    accommodation: number;
+    food: number;
+    transport: number;
+    activities: number;
+    miscellaneous: number;
+  };
+  packingList?: string[];
+  localFoods?: string[];
+  travelTips?: string[];
 }
 
 const tripSchema = new Schema<ITrip>(
@@ -78,6 +94,31 @@ const tripSchema = new Schema<ITrip>(
       enum: ["PLANNING", "ONGOING", "COMPLETED"],
       default: "PLANNING",
     },
+
+    travelers: {
+      type: Number,
+      default: 1,
+    },
+
+    itinerary: [
+      {
+        day: { type: Number, required: true },
+        title: { type: String, required: true },
+        activities: [{ type: String }],
+      },
+    ],
+
+    budgetBreakdown: {
+      accommodation: { type: Number, default: 0 },
+      food: { type: Number, default: 0 },
+      transport: { type: Number, default: 0 },
+      activities: { type: Number, default: 0 },
+      miscellaneous: { type: Number, default: 0 },
+    },
+
+    packingList: [{ type: String }],
+    localFoods: [{ type: String }],
+    travelTips: [{ type: String }],
   },
   {
     timestamps: true,

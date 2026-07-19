@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { authService } from "@/services/auth.service";
 import toast from "react-hot-toast";
 import Button from "@/components/ui/Button";
-import { User as UserIcon, Mail, Loader2, LogOut, Shield } from "lucide-react";
+import { User as UserIcon, Mail, Loader2, LogOut, Shield, Settings2, KeyRound } from "lucide-react";
 
 interface ProfileFormInputs {
   fullName: string;
@@ -59,66 +59,79 @@ export default function ProfilePage() {
 
   return (
     <ProtectedLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
-        {/* Profile Card Intro */}
-        <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-md p-6 shadow-sm flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-tr from-primary/30 to-secondary/30 border border-primary/20 text-2xl font-black text-foreground shadow-inner">
+      <div className="max-w-2xl mx-auto space-y-8 py-4">
+        {/* Profile Card Intro (Premium Apple-like layout) */}
+        <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-tr from-card/90 via-card/75 to-transparent p-6 md:p-8 shadow-md backdrop-blur-md flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+          <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+          <div className="absolute -top-[30%] -left-[10%] h-[150px] w-[150px] rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-[30%] -right-[10%] h-[150px] w-[150px] rounded-full bg-secondary/10 blur-3xl pointer-events-none" />
+
+          <div className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-primary/30 to-secondary/30 border-2 border-primary/20 text-3xl font-black text-foreground shadow-lg shadow-primary/5">
             {user ? getInitials(user.fullName) : "U"}
+            <span className="absolute bottom-0.5 right-0.5 flex h-4 w-4 rounded-full border-2 border-background bg-secondary animate-pulse" />
           </div>
-          <div className="flex-1 space-y-1">
-            <h1 className="text-xl font-extrabold text-foreground tracking-tight">{user?.fullName}</h1>
-            <p className="text-xs text-muted-foreground">{user?.email}</p>
-            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[10px] font-semibold uppercase tracking-wider mt-1">
-              <Shield className="h-3 w-3" />
-              <span>Mitra Traveler</span>
+
+          <div className="relative flex-1 space-y-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 justify-center sm:justify-start">
+              <h1 className="text-2xl font-extrabold text-foreground tracking-tight">{user?.fullName}</h1>
+              <div className="inline-flex items-center gap-1 self-center px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-wider">
+                <Shield className="h-3 w-3" />
+                <span>Mitra Traveler</span>
+              </div>
             </div>
+            <p className="text-sm text-muted-foreground font-semibold">{user?.email}</p>
           </div>
         </div>
 
         {/* Profile Edit Form */}
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="text-sm font-bold text-foreground uppercase tracking-wider border-b border-border pb-3 mb-5">
-            Modify Travel Profile
+        <div className="rounded-3xl border border-border bg-card/45 backdrop-blur-md p-6 md:p-8 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 text-muted-foreground/15">
+            <Settings2 className="h-20 w-20" />
+          </div>
+          <h2 className="text-sm font-bold text-foreground uppercase tracking-wider border-b border-border/80 pb-3 mb-6 flex items-center gap-2">
+            <span>Modify Travel Profile</span>
           </h2>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Full Name</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-muted-foreground/75">
-                  <UserIcon className="h-4 w-4" />
-                </span>
-                <input
-                  type="text"
-                  placeholder="Enter full name"
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all duration-300"
-                  {...register("fullName", { required: "Full name is required" })}
-                />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 relative z-10">
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Full Name</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3.5 flex items-center text-muted-foreground/75">
+                    <UserIcon className="h-4.5 w-4.5" />
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Enter full name"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-border bg-background/55 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300 font-semibold"
+                    {...register("fullName", { required: "Full name is required" })}
+                  />
+                </div>
+                {errors.fullName && <span className="text-[10px] text-red-500 font-semibold mt-1 block">{errors.fullName.message}</span>}
               </div>
-              {errors.fullName && <span className="text-[10px] text-red-500 font-semibold mt-1 block">{errors.fullName.message}</span>}
+
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Email Address</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3.5 flex items-center text-muted-foreground/75">
+                    <Mail className="h-4.5 w-4.5" />
+                  </span>
+                  <input
+                    type="email"
+                    placeholder="Enter email address"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-border bg-background/55 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300 font-semibold"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address" }
+                    })}
+                  />
+                </div>
+                {errors.email && <span className="text-[10px] text-red-500 font-semibold mt-1 block">{errors.email.message}</span>}
+              </div>
             </div>
 
-            <div>
-              <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Email Address</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-muted-foreground/75">
-                  <Mail className="h-4 w-4" />
-                </span>
-                <input
-                  type="email"
-                  placeholder="Enter email address"
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all duration-300"
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address" }
-                  })}
-                />
-              </div>
-              {errors.email && <span className="text-[10px] text-red-500 font-semibold mt-1 block">{errors.email.message}</span>}
-            </div>
-
-            <div className="flex gap-3 justify-end pt-2 border-t border-border/80 mt-4">
-              <Button type="submit" variant="primary" size="md" className="gap-1.5" disabled={submitting}>
+            <div className="flex gap-3 justify-end pt-4 border-t border-border/80 mt-6">
+              <Button type="submit" variant="primary" size="md" className="gap-2 px-6 rounded-xl font-bold py-2.5" disabled={submitting}>
                 {submitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -133,18 +146,21 @@ export default function ProfilePage() {
         </div>
 
         {/* Danger Area / Logout */}
-        <div className="rounded-3xl border border-red-500/10 bg-red-500/5 p-6 shadow-sm">
+        <div className="rounded-3xl border border-red-500/10 bg-red-500/5 p-6 md:p-8 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 text-red-500/10">
+            <KeyRound className="h-20 w-20" />
+          </div>
           <h3 className="text-sm font-bold text-red-500 uppercase tracking-wider border-b border-red-500/10 pb-3 mb-4">
             Security Control
           </h3>
-          <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-            Close down your current device session. Your tokens will be deleted from storage.
+          <p className="text-xs text-muted-foreground mb-6 leading-relaxed max-w-md">
+            Close down your current device session. Your tokens will be deleted from local storage, requiring re-authorization on your next visit.
           </p>
           <Button
             variant="outline"
             size="md"
             onClick={logout}
-            className="text-red-500 border-red-500/20 hover:bg-red-500/10 hover:border-red-500/40 gap-1.5 font-bold"
+            className="text-red-500 border-red-500/20 hover:bg-red-500/10 hover:border-red-500/40 gap-2 font-bold px-6 py-2.5 rounded-xl transition-all duration-300"
           >
             <LogOut className="h-4 w-4" />
             <span>Sign Out Session</span>

@@ -10,7 +10,7 @@ import TripCard from "@/components/trips/TripCard";
 import EmptyState from "@/components/common/EmptyState";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import CreateTripModal from "@/components/trips/CreateTripModal";
-import { Briefcase, Calendar, Wallet, Compass, Plus, UserCircle2 } from "lucide-react";
+import { Briefcase, Calendar, Wallet, Compass, Plus, UserCircle2, Sparkles } from "lucide-react";
 import Button from "@/components/ui/Button";
 import toast from "react-hot-toast";
 
@@ -66,7 +66,7 @@ export default function DashboardPage() {
         <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-tr from-primary/10 via-secondary/5 to-transparent p-6 md:p-8 shadow-sm">
           <div className="absolute top-[20%] right-[10%] -z-10 h-32 w-32 rounded-full bg-secondary/10 blur-2xl animate-pulse-slow" />
           <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight leading-none mb-2">
-            Namaste, <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{user?.name}</span>!
+            Namaste, <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{user?.fullName}</span>!
           </h1>
           <p className="text-sm text-muted-foreground max-w-lg leading-relaxed">
             Welcome back to your travel dashboard. Plan smart budgets, split bills, and discover gems for your upcoming ventures.
@@ -74,7 +74,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Statistics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <DashboardCard
             title="Total Trips Created"
             value={totalTrips}
@@ -96,6 +96,22 @@ export default function DashboardPage() {
             variant="accent"
             description="Combined budget size of your travels"
           />
+          <div className="rounded-2xl border border-primary/20 bg-gradient-to-tr from-primary/5 via-transparent to-transparent p-5 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between h-full bg-card/65 backdrop-blur-md">
+            <div className="flex items-center justify-between gap-4 mb-3">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">AI Trip Planner</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
+                <Sparkles className="h-5 w-5 animate-pulse" />
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-foreground tracking-tight mb-3">
+                ✨ Plan your next adventure with AI
+              </h4>
+              <Button variant="primary" size="sm" href="/ai-planner" className="w-full text-center justify-center font-bold">
+                Open AI Planner
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Dashboard Workstation split */}

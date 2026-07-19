@@ -30,6 +30,12 @@ export const create = async (req: AuthRequest, res: Response) => {
       startDate,
       endDate,
       budget,
+      travelers,
+      itinerary,
+      budgetBreakdown,
+      packingList,
+      localFoods,
+      travelTips,
     } = req.body;
 
     const trip = await createTrip(
@@ -39,7 +45,15 @@ export const create = async (req: AuthRequest, res: Response) => {
       startDate,
       endDate,
       budget,
-      req.user!.id
+      req.user!.id,
+      {
+        travelers,
+        itinerary,
+        budgetBreakdown,
+        packingList,
+        localFoods,
+        travelTips,
+      }
     );
 
     return res.status(201).json({
@@ -160,7 +174,7 @@ export const join = async (req: AuthRequest, res: Response) => {
 export const leave = async (req: AuthRequest, res: Response) => {
   try {
     const trip = await leaveTrip(
-      req.params.id,
+      req.params.id as string,
       req.user!.id
     );
 
