@@ -13,9 +13,14 @@ import {
 // Register Controller
 export const register = async (req: Request, res: Response) => {
   try {
+    console.log("=== REGISTRATION REQUEST DEBUG ===");
+    console.log("Request Body:", req.body);
+    console.log("Content-Type:", req.headers["content-type"]);
+    
     const errors = validationResult(req);
-
+    
     if (!errors.isEmpty()) {
+      console.log("Validation Errors:", errors.array());
       return res.status(400).json({
         success: false,
         errors: errors.array(),

@@ -107,15 +107,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
 
     try {
-      await authService.register({
+      console.log("Register Payload:", {
         fullName,
         email,
         password,
       });
 
+      const res = await authService.register({
+        fullName,
+        email,
+        password,
+      });
+
+      console.log("Register Success:", res);
+
       toast.success("Registration successful! Please verify your email.");
       router.replace(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
+      console.error("========== REGISTER ERROR ==========");
+      console.error("Status:", err?.response?.status);
+      console.error("Response:", err?.response?.data);
+      console.error("Message:", err?.message);
+      console.error("===================================");
+
       toast.error(
         err?.response?.data?.message ||
         err?.message ||
