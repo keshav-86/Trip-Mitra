@@ -178,25 +178,25 @@ export const TIMELINE_DATA: TimelineStep[] = [
 export const TESTIMONIALS_DATA: TestimonialItem[] = [
   {
     quote: "TripMitra made planning our family trip to Himachal so simple! The AI planner custom-routed our road trip, avoiding tourist traps, and the expense splitter was perfect.",
-    name: "Rohan Sharma",
-    role: "Software Engineer",
-    location: "Delhi",
+    name: "Harsh",
+    role: "Travel Vlogger",
+    location: "Hathras",
     rating: 5,
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan"
+    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Harsh"
   },
   {
     quote: "The Hidden Gems section is a goldmine. We found a secluded waterfall near Munnar that wasn't on any major travel site. Best travel assistant app ever!",
-    name: "Priya Patel",
+    name: "Jyoti",
     role: "Travel Blogger",
-    location: "Mumbai",
+    location: "Gurgaon",
     rating: 5,
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya"
+    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jyoti"
   },
   {
     quote: "Splitting bills on group trips was always a headache. TripMitra split the costs between five of us seamlessly in Indian Rupees. The offline vault saved my life when signal dropped.",
-    name: "Arjun Mehta",
+    name: "Ar",
     role: "Backpacker",
-    location: "Bangalore",
+    location: "Agra",
     rating: 4.8,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun"
   }
