@@ -42,22 +42,28 @@ class NodemailerProvider implements IEmailProvider {
         socketTimeout: 15000,      // 15s socket timeout
       };
 
-      config.host = "smtp.gmail.com";
-      config.port = 587;
-      config.secure = false;
-      config.requireTLS = true;
+      if (service) {
+        config.service = service;
+      } else {
+        config.host = host || "smtp.gmail.com";
+        config.port = parseInt(port || "587");
+        config.secure = port === "465";
+      }
+
+      // Explicitly force IPv4 to avoid ENETUNREACH IPv6 routing error on Render cloud
       config.family = 4;
 
       this.transporter = nodemailer.createTransport(config);
-      try {
-        await this.transporter.verify();
-        console.log("✅ SMTP verified successfully");
-      } catch (error) {
-        console.error("❌ SMTP verification failed:", error);
-        throw error;
-      }
       this.isDevelopmentFallback = false;
-      console.log(`📨 Nodemailer SMTP Transporter initialized successfully via ${service ? 'service: ' + service : 'host: ' + host}.`);
+
+      // Non-blocking async verification log
+      this.transporter.verify().then(() => {
+        console.log("✅ Nodemailer SMTP Connected & Verified (IPv4 forced).");
+      }).catch((err) => {
+        console.warn("⚠️ SMTP Verification Warning (Emails will still attempt dispatch):", err.message);
+      });
+
+      console.log(`📨 Nodemailer SMTP Transporter initialized via ${service ? 'service: ' + service : 'host: ' + host}.`);
     } else {
       this.isDevelopmentFallback = true;
       console.warn("⚠️ SMTP credentials not fully configured. Falling back to Console Email logging.");
