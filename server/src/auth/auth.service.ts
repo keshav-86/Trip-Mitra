@@ -29,11 +29,10 @@ export const registerUser = async (
     otpExpiry,
   });
 
-  try {
-    await emailService.sendOtpEmail(email, fullName, plainTextOtp);
-  } catch (emailErr) {
+  // Send OTP verification email in background (non-blocking)
+  emailService.sendOtpEmail(email, fullName, plainTextOtp).catch((emailErr) => {
     console.error("Failed to send verification email:", emailErr);
-  }
+  });
 
   return user;
 };

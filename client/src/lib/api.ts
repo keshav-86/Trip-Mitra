@@ -3,6 +3,7 @@ import { getToken, removeToken } from "./auth";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
+  timeout: 20000, // 20s request timeout for cloud network latency
   headers: {
     "Content-Type": "application/json",
   },

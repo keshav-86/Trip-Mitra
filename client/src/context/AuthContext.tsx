@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       toast.success("Welcome back to TripMitra!");
-
+      setLoading(false);
       router.replace("/dashboard");
     } catch (err: any) {
       toast.error(

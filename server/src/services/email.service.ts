@@ -37,6 +37,9 @@ class NodemailerProvider implements IEmailProvider {
           user,
           pass,
         },
+        connectionTimeout: 10000, // 10s connection timeout
+        greetingTimeout: 5000,    // 5s greeting timeout
+        socketTimeout: 15000,      // 15s socket timeout
       };
 
       if (service) {
@@ -52,11 +55,15 @@ class NodemailerProvider implements IEmailProvider {
       console.log(`📨 Nodemailer SMTP Transporter initialized successfully via ${service ? 'service: ' + service : 'host: ' + host}.`);
     } else {
       this.isDevelopmentFallback = true;
-      console.warn("⚠️ SMTP credentials not fully configured. Falling back to Ethereal / Console Email logging.");
+      console.warn("⚠️ SMTP credentials not fully configured. Falling back to Console Email logging.");
     }
   }
 
   async sendEmail(options: SendEmailOptions): Promise<void> {
+    if (!this.transporter && !this.isDevelopmentFallback) {
+      await this.initializeTransporter();
+    }
+
     if (this.isDevelopmentFallback) {
       console.log("\n==================================================");
       console.log(`✉️  EMAIL SIMULATION (Development Mode)`);
@@ -66,37 +73,7 @@ class NodemailerProvider implements IEmailProvider {
       console.log(`--------------------- HTML ---------------------`);
       console.log(options.html);
       console.log("==================================================\n");
-
-      // Attempt to send using Ethereal email for test inbox inspection if possible, non-blocking
-      try {
-        const testAccount = await nodemailer.createTestAccount();
-        const testTransporter = nodemailer.createTransport({
-          host: "smtp.ethereal.email",
-          port: 587,
-          secure: false,
-          auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
-          },
-        });
-
-        const info = await testTransporter.sendMail({
-          from: '"TripMitra Support" <no-reply@tripmitra.com>',
-          to: options.to,
-          subject: options.subject,
-          text: options.text,
-          html: options.html,
-        });
-
-        console.log(`✨ Ethereal Email Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
-      } catch (err) {
-        console.warn("Couldn't generate Ethereal preview link, console log is primary:", err);
-      }
       return;
-    }
-
-    if (!this.transporter) {
-      await this.initializeTransporter();
     }
 
     if (!this.transporter) {

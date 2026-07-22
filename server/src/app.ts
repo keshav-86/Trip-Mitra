@@ -7,7 +7,13 @@ import expenseRoutes from "./expense";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || true,
+    credentials: true,
+    maxAge: 86400, // Cache OPTIONS preflight in browser for 24 hours
+  })
+);
 app.use(express.json());
 import settlementRoutes from "./settlement";
 import aiRoutes from "./ai/ai.routes";
