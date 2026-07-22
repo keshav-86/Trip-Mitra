@@ -51,6 +51,13 @@ class NodemailerProvider implements IEmailProvider {
       }
 
       this.transporter = nodemailer.createTransport(config);
+      try {
+        await this.transporter.verify();
+        console.log("✅ SMTP verified successfully");
+      } catch (error) {
+        console.error("❌ SMTP verification failed:", error);
+        throw error;
+      }
       this.isDevelopmentFallback = false;
       console.log(`📨 Nodemailer SMTP Transporter initialized successfully via ${service ? 'service: ' + service : 'host: ' + host}.`);
     } else {
