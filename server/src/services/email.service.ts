@@ -57,11 +57,11 @@ class NodemailerProvider implements IEmailProvider {
       this.isDevelopmentFallback = false;
 
       // Non-blocking async verification log
-      this.transporter.verify().then(() => {
-        console.log("✅ Nodemailer SMTP Connected & Verified (IPv4 forced).");
-      }).catch((err) => {
-        console.warn("⚠️ SMTP Verification Warning (Emails will still attempt dispatch):", err.message);
-      });
+      // this.transporter.verify().then(() => {
+      //   console.log("✅ Nodemailer SMTP Connected & Verified (IPv4 forced).");
+      // }).catch((err) => {
+      //   console.warn("⚠️ SMTP Verification Warning (Emails will still attempt dispatch):", err.message);
+      // });
 
       console.log(`📨 Nodemailer SMTP Transporter initialized via ${service ? 'service: ' + service : 'host: ' + host}.`);
     } else {
