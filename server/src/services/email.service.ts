@@ -42,13 +42,11 @@ class NodemailerProvider implements IEmailProvider {
         socketTimeout: 15000,      // 15s socket timeout
       };
 
-      if (service) {
-        config.service = service;
-      } else {
-        config.host = host;
-        config.port = parseInt(port || "587");
-        config.secure = port === "465";
-      }
+      config.host = "smtp.gmail.com";
+      config.port = 587;
+      config.secure = false;
+      config.requireTLS = true;
+      config.family = 4;
 
       this.transporter = nodemailer.createTransport(config);
       try {
