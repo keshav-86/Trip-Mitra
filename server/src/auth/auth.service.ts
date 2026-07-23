@@ -1,3 +1,4 @@
+
 import bcrypt from "bcrypt";
 import User from "../models/User";
 import jwt from "jsonwebtoken";
@@ -18,7 +19,7 @@ export const registerUser = async (
   const hashedPassword = await bcrypt.hash(password, 10);
   const plainTextOtp = generateOtp(6);
   const hashedOtp = hashOtp(plainTextOtp);
-  const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+  const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
   const user = await User.create({
     fullName,
@@ -29,17 +30,17 @@ export const registerUser = async (
     otpExpiry,
   });
 
-  // Send OTP verification email in background (non-blocking)
   console.log("📩 About to send OTP email to:", email);
 
-try {
-  await emailService.sendOtpEmail(email, fullName, plainTextOtp);
-  console.log("✅ OTP email function completed");
-} catch (err) {
-  console.error("❌ OTP email failed:", err);
-}
-
-return user;
+  // Send email in background (non-blocking)
+  emailService
+    .sendOtpEmail(email, fullName, plainTextOtp)
+    .then(() => {
+      console.log("✅ OTP email sent successfully");
+    })
+    .catch((err) => {
+      console.error("❌ OTP email failed:", err);
+    });
 
   return user;
 };
@@ -50,11 +51,8 @@ export const loginUser = async (
 ) => {
   console.log("=== LOGIN DEBUG ===");
   console.log("Email Received:", email);
-  console.log("Password Received:", password);
 
   const user = await User.findOne({ email });
-
-  console.log("User Found:", user);
 
   if (!user) {
     throw new Error("Invalid email or password");
@@ -64,17 +62,13 @@ export const loginUser = async (
     throw new Error("Please verify your email address to log in.");
   }
 
-  console.log("Stored Password Hash:", user.password);
-
   const isMatch = await bcrypt.compare(password, user.password);
-
-  console.log("Password Match:", isMatch);
 
   if (!isMatch) {
     throw new Error("Invalid email or password");
   }
 
-  console.log("Login Successful");
+  console.log("✅ Login Successful");
 
   return user;
 };
