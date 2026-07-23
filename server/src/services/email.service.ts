@@ -26,21 +26,22 @@ class ResendProvider implements IEmailProvider {
     console.log("✅ Resend initialized successfully.");
   }
 
- async sendEmail(options: SendEmailOptions): Promise<void> {
-  const { data, error } = await this.resend.emails.send({
-    from: "TripMitra <onboarding@resend.dev>",
-    to: options.to,
-    subject: options.subject,
-    html: options.html,
-    text: options.text,
-  });
+  async sendEmail(options: SendEmailOptions): Promise<void> {
+    const { data, error } = await this.resend.emails.send({
+      from: "TripMitra <onboarding@resend.dev>",
+      to: options.to,
+      subject: options.subject,
+      html: options.html,
+      text: options.text,
+    });
 
-  if (error) {
-    console.error("❌ Resend Error:", error);
-    throw new Error(error.message);
+    if (error) {
+      console.error("❌ Resend Error:", error);
+      throw new Error(error.message);
+    }
+
+    console.log("✅ Email sent successfully:", data?.id);
   }
-
-  console.log("✅ Email sent successfully:", data?.id);
 }
 
 class EmailService {
