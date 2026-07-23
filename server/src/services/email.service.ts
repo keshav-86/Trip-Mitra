@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 export interface SendEmailOptions {
   to: string;
@@ -11,56 +11,41 @@ export interface IEmailProvider {
   sendEmail(options: SendEmailOptions): Promise<void>;
 }
 
-class ResendProvider implements IEmailProvider {
-  private resend: Resend;
+class BrevoProvider implements IEmailProvider {
+  private transporter: nodemailer.Transporter;
 
   constructor() {
-    const apiKey = process.env.RESEND_API_KEY;
-
-    if (!apiKey) {
-      throw new Error("RESEND_API_KEY is missing.");
-    }
-
-    this.resend = new Resend(apiKey);
-
-    console.log("✅ Resend initialized successfully.");
+    this.transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
   }
 
   async sendEmail(options: SendEmailOptions): Promise<void> {
-  const emailPayload: {
-    from: string;
-    to: string;
-    subject: string;
-    html: string;
-    text?: string;
-  } = {
-    from: "TripMitra <onboarding@resend.dev>",
-    to: options.to,
-    subject: options.subject,
-    html: options.html,
-  };
+    try {
+      const info = await this.transporter.sendMail({
+        from: `TripMitra <${process.env.EMAIL_FROM}>`,
+        to: options.to,
+        subject: options.subject,
+        text: options.text,
+        html: options.html,
+      });
 
-  if (options.text) {
-    emailPayload.text = options.text;
+      console.log("✅ Email sent:", info.messageId);
+    } catch (error) {
+      console.error("❌ Email Error:", error);
+      throw error;
+    }
   }
-
-  const { data, error } = await this.resend.emails.send(emailPayload);
-
-  if (error) {
-    console.error("❌ Resend Error:", error);
-    throw new Error(error.message);
-  }
-
-  console.log("✅ Email sent successfully:", data?.id);
-}
 }
 
 class EmailService {
-  private provider: IEmailProvider;
-
-  constructor(provider: IEmailProvider) {
-    this.provider = provider;
-  }
+  constructor(private provider: IEmailProvider) {}
 
   async sendEmail(options: SendEmailOptions): Promise<void> {
     await this.provider.sendEmail(options);
@@ -90,11 +75,7 @@ TripMitra Team`;
 
         <p>Your verification code is:</p>
 
-        <h1 style="
-            letter-spacing:8px;
-            color:#2563eb;
-            text-align:center;
-        ">
+        <h1 style="letter-spacing:8px;color:#2563eb;text-align:center;">
           ${otp}
         </h1>
 
@@ -104,9 +85,7 @@ TripMitra Team`;
 
         <hr>
 
-        <small>
-          © ${new Date().getFullYear()} TripMitra
-        </small>
+        <small>© ${new Date().getFullYear()} TripMitra</small>
       </div>
     `;
 
@@ -120,5 +99,5 @@ TripMitra Team`;
 }
 
 export const emailService = new EmailService(
-  new ResendProvider()
+  new BrevoProvider()
 );
