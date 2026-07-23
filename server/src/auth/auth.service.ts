@@ -30,9 +30,16 @@ export const registerUser = async (
   });
 
   // Send OTP verification email in background (non-blocking)
-  emailService.sendOtpEmail(email, fullName, plainTextOtp).catch((emailErr) => {
-    console.error("Failed to send verification email:", emailErr);
-  });
+  console.log("📩 About to send OTP email to:", email);
+
+try {
+  await emailService.sendOtpEmail(email, fullName, plainTextOtp);
+  console.log("✅ OTP email function completed");
+} catch (err) {
+  console.error("❌ OTP email failed:", err);
+}
+
+return user;
 
   return user;
 };
