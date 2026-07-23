@@ -28,12 +28,12 @@ class ResendProvider implements IEmailProvider {
 
   async sendEmail(options: SendEmailOptions): Promise<void> {
     const { data, error } = await this.resend.emails.send({
-      from: "TripMitra <onboarding@resend.dev>",
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-      text: options.text,
-    });
+  from: "TripMitra <onboarding@resend.dev>",
+  to: options.to,
+  subject: options.subject,
+  html: options.html,
+  ...(options.text ? { text: options.text } : {}),
+});
 
     if (error) {
       console.error("❌ Resend Error:", error);
