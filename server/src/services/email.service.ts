@@ -20,13 +20,28 @@ class BrevoProvider implements IEmailProvider {
       port: Number(process.env.SMTP_PORT),
       secure: false,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.SMTP_USER!,
+        pass: process.env.SMTP_PASS!,
       },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
+    });
+
+    this.transporter.verify((error) => {
+      if (error) {
+        console.error("❌ SMTP VERIFY FAILED");
+        console.error(error);
+      } else {
+        console.log("✅ SMTP VERIFIED SUCCESSFULLY");
+      }
     });
   }
 
   async sendEmail(options: SendEmailOptions): Promise<void> {
+    console.log("📨 About to send email...");
+    console.log("To:", options.to);
+
     try {
       const info = await this.transporter.sendMail({
         from: `TripMitra <${process.env.EMAIL_FROM}>`,
@@ -36,9 +51,16 @@ class BrevoProvider implements IEmailProvider {
         html: options.html,
       });
 
-      console.log("✅ Email sent:", info.messageId);
-    } catch (error) {
-      console.error("❌ Email Error:", error);
+      console.log("✅ EMAIL SENT SUCCESSFULLY");
+      console.log("Message ID:", info.messageId);
+      console.log("Response:", info.response);
+    } catch (error: any) {
+      console.error("❌ EMAIL SEND FAILED");
+      console.error("Message:", error.message);
+      console.error("Code:", error.code);
+      console.error("Command:", error.command);
+      console.error("Response:", error.response);
+      console.error("Response Code:", error.responseCode);
       throw error;
     }
   }
@@ -68,7 +90,7 @@ Regards,
 TripMitra Team`;
 
     const html = `
-      <div style="font-family:Arial,sans-serif;padding:20px">
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
         <h2>TripMitra Email Verification</h2>
 
         <p>Hello <b>${fullName}</b>,</p>
